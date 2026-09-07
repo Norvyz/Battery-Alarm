@@ -37,33 +37,17 @@ Iniciar monitoreo → detectar la carga → detectar 100% → esperar el tiempo 
 
 
 
+## Capturas
+
 <div align="center">
 
-<h1><a id="screenshots"></a>Capturas</h1>
-
-<table>
-  <tr>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/5e9f5cc0-87c7-41ba-a211-a740dbbeb32d"
-           width="450"
-           alt="Preview" />
-    </td>
-    <td align="center">
-      <img src="https://github.com/user-attachments/assets/95b4414e-369a-4dca-8761-313ef2b73b56"
-           width="450"
-           alt="Notificacion" />
-    </td>
-  </tr>
-</table>
-
-<img width="720" height="1600" alt="preview" src="" />
-
+| Preview | Notificación |
+| --- | --- |
+| <img src="https://github.com/user-attachments/assets/5e9f5cc0-87c7-41ba-a211-a740dbbeb32d" width="240" alt="Pantalla de inicio"> | <img src="https://github.com/user-attachments/assets/95b4414e-369a-4dca-8761-313ef2b73b56" width="240" alt="Notificación de monitoreo"> |
 
 </div>
 <br/>
-<br/>
 
-</div>
 ---
 
 ## Características
@@ -127,3 +111,12 @@ Al etiquetar una versión (`git tag vX.Y.Z && git push origin vX.Y.Z`), el workf
 ## Licencia
 
 [MIT](LICENSE) © Battery Alarm contributors
+
+<div align="center">
+
+<sub>
+Hecho con 💚 por
+<a href="https://github.com/Norvyz">Norvyz</a>
+</sub>
+
+</div>
