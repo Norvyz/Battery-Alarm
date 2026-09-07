@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">Battery Alarm</string>
+
+    <string name="tagline">Avisa cuando tu carga termina</string>
+
+    <string name="action_start">Iniciar monitoreo</string>
+    <string name="action_stop">Detener monitoreo</string>
+    <string name="action_stop_alarm">Detener alarma</string>
+    <string name="action_ok">Aceptar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="setting_change">Cambiar</string>
+
+    <string name="hint_start">Pulsa el botón y luego conecta tu celular al cargador. La app solo vigila la carga mientras tú lo decidas.</string>
+    <string name="hint_stop">Puedes detener el monitoreo aquí o directamente desde la notificación.</string>
+
+    <string name="setting_delay_title">Espera tras el 100%</string>
+    <string name="setting_delay_hint">Tiempo antes de que suene la alarma</string>
+    <string name="delay_value">%1$d min</string>
+    <string name="delay_custom">Personalizado…</string>
+    <string name="custom_minutes_label">Minutos (1 a 120)</string>
+
+    <string name="setting_sound_title">Sonido de alarma</string>
+    <string name="sound_system_alarm">Alarma del sistema</string>
+    <string name="sound_system_notification">Notificación del sistema</string>
+    <string name="sound_pick_file">Elegir archivo de audio…</string>
+    <string name="sound_custom">Archivo personalizado</string>
+
+    <string name="channel_monitoring">Estado de la carga</string>
+    <string name="channel_monitoring_desc">Muestra el progreso mientras se monitorea la carga.</string>
+    <string name="channel_alarm">Alarma de carga completa</string>
+    <string name="channel_alarm_desc">Suena cuando la batería termina de cargar.</string>
+
+    <string name="notif_charging">Batería: %d%% · Cargando…</string>
+    <string name="notif_waiting">100%% · Alarma en %s</string>
+    <string name="notif_waiting_plug">Batería: %d%% · Esperando el cargador</string>
+    <string name="notif_complete">¡Carga completa! Desconecta el cargador.</string>
+    <string name="notif_action_stop">Detener</string>
+
+    <string name="alarm_title">¡Carga completa!</string>
+    <string name="alarm_body">Tu batería lleva %1$d %2$s al 100%%. Puedes desconectar el cargador.</string>
+    <string name="minuto">minuto</string>
+    <string name="minutos">minutos</string>
+
+    <string name="state_complete">Carga completa</string>
+    <string name="state_complete_detail">¡Listo! Desconecta el cargador.</string>
+    <string name="state_waiting">Esperando alarma</string>
+    <string name="state_waiting_detail">Alarma en %s</string>
+    <string name="state_charging">Cargando…</string>
+    <string name="state_charging_detail">Cargando…</string>
+    <string name="state_waiting_plug">Esperando el cargador</string>
+
+    <string name="monitor_battery">Batería</string>
+    <string name="monitor_status">Estado</string>
+    <string name="monitor_alarm_in">Alarma en</string>
+</resources>
