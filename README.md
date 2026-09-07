@@ -39,19 +39,19 @@ Iniciar monitoreo → detectar la carga → detectar 100% → esperar el tiempo 
 
 <div align="center">
 
-<h1><a id="screenshots"></a>## Capturas</h1>
+<h1><a id="screenshots"></a>Capturas</h1>
 
 <table>
   <tr>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/5e9f5cc0-87c7-41ba-a211-a740dbbeb32d"
            width="450"
-           alt="Grupos de aplicaciones" />
+           alt="Preview" />
     </td>
     <td align="center">
       <img src="https://github.com/user-attachments/assets/95b4414e-369a-4dca-8761-313ef2b73b56"
            width="450"
-           alt="Aplicaciones" />
+           alt="Notificacion" />
     </td>
   </tr>
 </table>
