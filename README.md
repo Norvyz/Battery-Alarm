@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="brand/logo.svg" width="112" height="112" alt="Logo de Battery Alarm">
+<img src="assets/icon-192.png" width="112" height="112" alt="Logo de Battery Alarm">
 
 # Battery Alarm
 
