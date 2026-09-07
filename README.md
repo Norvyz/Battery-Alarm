@@ -35,21 +35,36 @@ Iniciar monitoreo → detectar la carga → detectar 100% → esperar el tiempo 
 6. Se muestra el aviso **Carga completa**.
 7. El monitoreo termina solo: si desconectas el cargador antes del 100 %, o si lo detienes desde la notificación.
 
-## Capturas
 
-> Pendientes. Agrega aquí las capturas de pantalla de la app. Sugerencia de estructura:
->
-> ```
-> docs/
->   screenshots/
->     pantalla-inicio.png
->     monitoreo-activo.png
->     carga-completa.png
-> ```
 
-| Pantalla de inicio | Monitoreo activo | Carga completa |
-| --- | --- | --- |
-| `<img src="docs/screenshots/pantalla-inicio.png" width="220">` | `<img src="docs/screenshots/monitoreo-activo.png" width="220">` | `<img src="docs/screenshots/carga-completa.png" width="220">` |
+<div align="center">
+
+<h1><a id="screenshots"></a>## Capturas</h1>
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/5e9f5cc0-87c7-41ba-a211-a740dbbeb32d"
+           width="450"
+           alt="Grupos de aplicaciones" />
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/95b4414e-369a-4dca-8761-313ef2b73b56"
+           width="450"
+           alt="Aplicaciones" />
+    </td>
+  </tr>
+</table>
+
+<img width="720" height="1600" alt="preview" src="" />
+
+
+</div>
+<br/>
+<br/>
+
+</div>
+---
 
 ## Características
 
