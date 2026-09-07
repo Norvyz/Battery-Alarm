@@ -17,6 +17,9 @@ object Settings {
     private const val PREFS = "battery_alarm"
     private const val KEY_DELAY_MINUTES = "delay_minutes"
     private const val KEY_SOUND = "alarm_sound"
+    private const val KEY_AUTO_START = "auto_start_on_connect"
+    private const val KEY_BOOST_LEVEL = "alarm_boost_level"
+    private const val KEY_TARGET_LEVEL = "alarm_target_level"
 
     const val SOUND_SYSTEM_ALARM = "system_alarm"
     const val SOUND_SYSTEM_NOTIFICATION = "system_notification"
@@ -41,5 +44,41 @@ object Settings {
     fun setSound(context: Context, value: String) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .edit().putString(KEY_SOUND, value).apply()
+    }
+
+    /** true = el monitoreo se inicia solo cuando se conecta el cargador. */
+    fun autoStart(context: Context): Boolean {
+        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getBoolean(KEY_AUTO_START, false)
+    }
+
+    fun setAutoStart(context: Context, enabled: Boolean) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .edit().putBoolean(KEY_AUTO_START, enabled).apply()
+    }
+
+    /** Nivel del boost de volumen: 0 = desactivado, 1..100 = % del volumen máximo. */
+    fun boostLevel(context: Context): Int {
+        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getInt(KEY_BOOST_LEVEL, 0).coerceIn(0, 100)
+    }
+
+    fun setBoostLevel(context: Context, level: Int) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .edit().putInt(KEY_BOOST_LEVEL, level.coerceIn(0, 100)).apply()
+    }
+
+    /** true = el boost de volumen está activado. */
+    fun boostEnabled(context: Context): Boolean = boostLevel(context) > 0
+
+    /** Porcentaje (1..100) al que debe sonar la alarma. 100 = carga completa. */
+    fun targetLevel(context: Context): Int {
+        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getInt(KEY_TARGET_LEVEL, 100).coerceIn(1, 100)
+    }
+
+    fun setTargetLevel(context: Context, level: Int) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .edit().putInt(KEY_TARGET_LEVEL, level.coerceIn(1, 100)).apply()
     }
 }

@@ -4,33 +4,20 @@
       <stop offset="0" stop-color="#123126"/>
       <stop offset="1" stop-color="#060C09"/>
     </linearGradient>
-    <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2FE68F"/>
-      <stop offset="1" stop-color="#0FAE68"/>
-    </linearGradient>
   </defs>
 
   <rect x="0" y="0" width="108" height="108" rx="24" fill="url(#bg)"/>
 
-  <g fill="none" stroke="#B2FBD7" stroke-width="4" stroke-linecap="round">
-    <path d="M 80,16 Q 88,24 88,32"/>
-    <path d="M 90,9 Q 100,20 100,34"/>
+  <g fill="none" stroke="#B2FBD7" stroke-linecap="round">
+    <path d="M 75,51 Q 81,56 81,64" stroke-width="5"/>
+    <path d="M 86,43 Q 93,50 93,71" stroke-width="5"/>
+    <path d="M 33,51 Q 27,56 27,64" stroke-width="5"/>
+    <path d="M 22,43 Q 15,50 15,71" stroke-width="5"/>
   </g>
 
-  <g>
-    <path d="M 40,26 C 44,17 64,17 68,26 L 73,40 C 64,47 44,47 35,40 Z" fill="#54F5A0"/>
-    <circle cx="54" cy="44" r="3.2" fill="#B2FBD7"/>
-  </g>
+  <path d="M 50,32 L 58,32 Q 60,32 60,34 L 60,38 Q 60,40 58,40 L 50,40 Q 48,40 48,38 L 48,34 Q 48,32 50,32 Z" fill="none" stroke="#B2FBD7" stroke-width="5" stroke-linejoin="round"/>
 
-  <g fill="none" stroke="#F2FFF8" stroke-width="5" stroke-linejoin="round">
-    <path d="M 45,48 H 70 C 75,48 79,52 79,57 V 79 C 79,84 75,88 70,88 H 45 C 40,88 36,84 36,79 V 57 C 36,52 40,48 45,48 Z"/>
-  </g>
+  <path d="M 45,40 L 63,40 Q 69,40 69,46 L 69,74 Q 69,80 63,80 L 45,80 Q 39,80 39,74 L 39,46 Q 39,40 45,40 Z" fill="none" stroke="#B2FBD7" stroke-width="5.5" stroke-linejoin="round"/>
 
-  <g fill="url(#fill)">
-    <rect x="40" y="52" width="34" height="10" rx="4.5"/>
-    <rect x="40" y="64" width="34" height="10" rx="4.5"/>
-    <rect x="40" y="76" width="34" height="7" rx="3"/>
-  </g>
-
-  <path d="M 54,59 L 50,67 H 53.5 L 52,75 L 58,65 H 54.5 Z" fill="#FFFFFF"/>
+  <path d="M 56.5,47 L 47.5,63 L 53.2,63 L 52,72 L 61.5,56.5 L 55.8,56.5 Z" fill="#B2FBD7"/>
 </svg>

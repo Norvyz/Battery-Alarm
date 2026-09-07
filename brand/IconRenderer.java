@@ -60,83 +60,82 @@ public class IconRenderer {
         }
 
         // Glyph scale from 108-box geometry
-        double glyphW = 65.0;
-        double glyphH = 79.0;
-        double scale = (n * 0.66) / glyphW;
-        double gh = glyphH * scale;
-        double gw = glyphW * scale;
-        double ox = (n - gw) / 2.0;
-        double oy = (n - gh) / 2.0;
+        double glyphW = 78.0;
+        double glyphH = 48.0;
+        double scale = (n * 0.74) / glyphW;
+        double ox = n / 2.0 - 54.0 * scale;
+        double oy = n / 2.0 - 56.0 * scale;
 
         g.translate(ox, oy);
         g.scale(scale, scale);
 
-        drawGlyph(g, n * 0.66 / 65.0 > 0 ? scale : scale, scale);
+        drawGlyph(g, scale, scale);
         g.dispose();
         return img;
     }
 
     void drawGlyph(Graphics2D g, double s, double s2) {
-        // sound arcs
-        g.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g.setColor(new Color(0xB2FBD7));
-        Path2D.Double arc1 = new Path2D.Double();
-        arc1.moveTo(80, 16);
-        arc1.quadTo(88, 24, 88, 32);
-        g.draw(arc1);
-        Path2D.Double arc2 = new Path2D.Double();
-        arc2.moveTo(90, 9);
-        arc2.quadTo(100, 20, 100, 34);
-        g.draw(arc2);
 
-        // bell
-        g.setColor(new Color(0x54F5A0));
-        Path2D.Double bell = new Path2D.Double();
-        bell.moveTo(40, 26);
-        bell.curveTo(44, 17, 64, 17, 68, 26);
-        bell.lineTo(73, 40);
-        bell.curveTo(64, 47, 44, 47, 35, 40);
-        bell.closePath();
-        g.fill(bell);
+        // battery terminal
+        g.setStroke(new BasicStroke(5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        Path2D.Double nub = new Path2D.Double();
+        nub.moveTo(50, 32);
+        nub.lineTo(58, 32);
+        nub.quadTo(60, 32, 60, 34);
+        nub.lineTo(60, 38);
+        nub.quadTo(60, 40, 58, 40);
+        nub.lineTo(50, 40);
+        nub.quadTo(48, 40, 48, 38);
+        nub.lineTo(48, 34);
+        nub.quadTo(48, 32, 50, 32);
+        nub.closePath();
+        g.draw(nub);
 
-        // clapper
-        g.setColor(new Color(0xB2FBD7));
-        g.fill(new Ellipse2D.Double(54 - 3.2, 44 - 3.2, 6.4, 6.4));
-
-        // battery body stroke
-        g.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        g.setColor(new Color(0xF2FFF8));
+        // battery body
+        g.setStroke(new BasicStroke(5.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         Path2D.Double body = new Path2D.Double();
-        body.moveTo(45, 48);
-        body.lineTo(70, 48);
-        body.curveTo(75, 48, 79, 52, 79, 57);
-        body.lineTo(79, 79);
-        body.curveTo(79, 84, 75, 88, 70, 88);
-        body.lineTo(45, 88);
-        body.curveTo(40, 88, 36, 84, 36, 79);
-        body.lineTo(36, 57);
-        body.curveTo(36, 52, 40, 48, 45, 48);
+        body.moveTo(45, 40);
+        body.lineTo(63, 40);
+        body.quadTo(69, 40, 69, 46);
+        body.lineTo(69, 74);
+        body.quadTo(69, 80, 63, 80);
+        body.lineTo(45, 80);
+        body.quadTo(39, 80, 39, 74);
+        body.lineTo(39, 46);
+        body.quadTo(39, 40, 45, 40);
         body.closePath();
         g.draw(body);
 
-        // charge segments
-        g.setColor(new Color(0x2FE68F));
-        g.fill(new RoundRectangle2D.Double(40, 52, 34, 10, 4.5, 4.5));
-        g.setColor(new Color(0x1BD17F));
-        g.fill(new RoundRectangle2D.Double(40, 64, 34, 10, 4.5, 4.5));
-        g.setColor(new Color(0x0FAE68));
-        g.fill(new RoundRectangle2D.Double(40, 76, 34, 7, 3, 3));
-
-        // bolt
-        g.setColor(Color.WHITE);
+        // bolt (charging ray)
         Path2D.Double bolt = new Path2D.Double();
-        bolt.moveTo(54, 59);
-        bolt.lineTo(50, 67);
-        bolt.lineTo(53.5, 67);
-        bolt.lineTo(52, 75);
-        bolt.lineTo(58, 65);
-        bolt.lineTo(54.5, 65);
+        bolt.moveTo(56.5, 47);
+        bolt.lineTo(47.5, 63);
+        bolt.lineTo(53.2, 63);
+        bolt.lineTo(52, 72);
+        bolt.lineTo(61.5, 56.5);
+        bolt.lineTo(55.8, 56.5);
         bolt.closePath();
         g.fill(bolt);
+
+        // sound arcs, symmetric both sides
+        g.setStroke(new BasicStroke(5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        g.setColor(new Color(0xB2FBD7));
+        Path2D.Double a1 = new Path2D.Double();
+        a1.moveTo(75, 51);
+        a1.quadTo(81, 56, 81, 64);
+        g.draw(a1);
+        Path2D.Double a2 = new Path2D.Double();
+        a2.moveTo(86, 43);
+        a2.quadTo(93, 50, 93, 71);
+        g.draw(a2);
+        Path2D.Double a3 = new Path2D.Double();
+        a3.moveTo(33, 51);
+        a3.quadTo(27, 56, 27, 64);
+        g.draw(a3);
+        Path2D.Double a4 = new Path2D.Double();
+        a4.moveTo(22, 43);
+        a4.quadTo(15, 50, 15, 71);
+        g.draw(a4);
     }
 }

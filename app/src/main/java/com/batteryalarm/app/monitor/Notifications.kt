@@ -60,9 +60,13 @@ object Notifications {
 
         val title = context.getString(R.string.app_name)
         val text = when {
-            state.alarmed -> context.getString(R.string.notif_complete)
+            state.alarmed -> context.getString(
+                R.string.notif_complete,
+                state.targetLevel
+            )
             state.waiting -> context.getString(
                 R.string.notif_waiting,
+                state.targetLevel,
                 Units.formatRemaining(state.remainingSeconds)
             )
             state.charging -> context.getString(
@@ -105,7 +109,8 @@ object Notifications {
         val text = context.getString(
             R.string.alarm_body,
             state.delayMinutes,
-            context.getString(if (state.delayMinutes == 1) R.string.minuto else R.string.minutos)
+            context.getString(if (state.delayMinutes == 1) R.string.minuto else R.string.minutos),
+            state.targetLevel
         )
 
         return NotificationCompat.Builder(context, CHANNEL_ALARM)

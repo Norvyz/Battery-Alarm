@@ -17,9 +17,10 @@ import com.batteryalarm.app.data.Settings
  * Servicio en primer plano que vigila la carga mientras el usuario lo decide.
  *
  * Flujo: el usuario pulsa "Iniciar monitoreo" → este servicio se mantiene
- * activo en la barra de estado. Cuando la batería llega al 100% espera el
- * tiempo configurado y entonces suena la alarma. El servicio termina cuando
- * el usuario lo detiene (o al desconectar el cargador antes del 100%).
+ * activo en la barra de estado. Cuando la batería llega al nivel configurado
+ * (o al 100% por defecto) espera el tiempo configurado y entonces suena la
+ * alarma. El servicio termina cuando el usuario lo detiene (o al desconectar
+ * el cargador antes del nivel).
  */
 class MonitoringService : Service() {
 
@@ -37,6 +38,24 @@ class MonitoringService : Service() {
 
         fun stop(context: Context) {
             context.stopService(Intent(context, MonitoringService::class.java))
+        }
+
+        /** Lee la última emisión (sticky) y dice si el cargador está conectado. */
+        fun isCharging(context: Context): Boolean {
+            return try {
+                val intent = context.registerReceiver(
+                    null,
+                    IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                )
+                val status = intent?.getIntExtra(
+                    BatteryManager.EXTRA_STATUS,
+                    BatteryManager.BATTERY_STATUS_UNKNOWN
+                ) ?: BatteryManager.BATTERY_STATUS_UNKNOWN
+                status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                    status == BatteryManager.BATTERY_STATUS_FULL
+            } catch (_: Exception) {
+                false
+            }
         }
 
         fun stopIntent(context: Context): PendingIntent {
@@ -108,7 +127,14 @@ class MonitoringService : Service() {
             return
         }
         syncState(current)
-        processBatteryLogic(current)
+        if (Monitor.state.value?.charging != true) {
+            // El cargador acaba de conectarse y la emisión sticky (battery) puede
+            // todavía decir "no cargando" por unos instantes. No nos detenemos aquí:
+            // el receiver detectará la carga en cuanto llegue.
+            Log.i(TAG, "Se espera a que la carga comience")
+        } else {
+            processBatteryLogic(current)
+        }
 
         val state = Monitor.state.value ?: MonitorState(active = true)
         startForeground(Notifications.ID_MONITORING, Notifications.monitoringNotification(this, state))
@@ -142,9 +168,9 @@ class MonitoringService : Service() {
             return
         }
 
-        if (level >= 100 && !state.waiting) {
+        if (level >= state.targetLevel && !state.waiting) {
             startWaiting()
-        } else if (level < 100 && !state.alarmed) {
+        } else if (level < state.targetLevel && !state.alarmed) {
             Monitor.update { it.copy(waiting = false, remainingSeconds = 0) }
         }
     }
@@ -160,7 +186,8 @@ class MonitoringService : Service() {
             it.copy(
                 charging = charging,
                 level = percent,
-                delayMinutes = Settings.delayMinutes(this)
+                delayMinutes = Settings.delayMinutes(this),
+                targetLevel = Settings.targetLevel(this)
             )
         }
         Notifications.showMonitoring(this, Monitor.state.value ?: return)
@@ -188,7 +215,7 @@ class MonitoringService : Service() {
         Notifications.showAlarm(this, current)
         Notifications.showMonitoring(this, current)
         AlarmPlayer.play(this)
-        Log.i(TAG, "¡Carga completa! Alarma sonando después de $delayMin minuto(s) al 100%")
+        Log.i(TAG, "¡Nivel ${current.targetLevel}% alcanzado! Alarma sonando después de $delayMin minuto(s)")
     }
 
     override fun onDestroy() {

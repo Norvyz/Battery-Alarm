@@ -13,17 +13,41 @@
     <string name="hint_start">Pulsa el botón y luego conecta tu celular al cargador. La app solo vigila la carga mientras tú lo decidas.</string>
     <string name="hint_stop">Puedes detener el monitoreo aquí o directamente desde la notificación.</string>
 
-    <string name="setting_delay_title">Espera tras el 100%</string>
-    <string name="setting_delay_hint">Tiempo antes de que suene la alarma</string>
+    <string name="setting_delay_title">Espera antes de sonar</string>
+    <string name="setting_delay_hint">Cuánto esperar tras llegar al nivel</string>
     <string name="delay_value">%1$d min</string>
     <string name="delay_custom">Personalizado…</string>
     <string name="custom_minutes_label">Minutos (1 a 120)</string>
 
+    <string name="setting_target_title">Nivel de alarma</string>
+    <string name="setting_target_hint">Suena cuando la batería llegue a este porcentaje.</string>
+    <string name="setting_target_slider">Porcentaje</string>
+    <string name="setting_target_value">%1$d%%</string>
+
     <string name="setting_sound_title">Sonido de alarma</string>
+    <string name="setting_sound_tip">Recuerda cambiar el sonido para identificar que tu celular está sonando porque ya llego al nivel.</string>
     <string name="sound_system_alarm">Alarma del sistema</string>
     <string name="sound_system_notification">Notificación del sistema</string>
     <string name="sound_pick_file">Elegir archivo de audio…</string>
     <string name="sound_custom">Archivo personalizado</string>
+
+    <string name="setting_autostart_title">Iniciar al conectar el cargador</string>
+    <string name="setting_autostart_hint">Al conectar el cargador el monitoreo se inicia solo.</string>
+    <string name="setting_autostart_note">En algunos celulares, abre la app una vez antes de conectar el cargador.</string>
+    <string name="setting_boost_title">Boost de volumen</string>
+    <string name="setting_boost_hint">Sube el volumen mientras suena la alarma.</string>
+    <string name="setting_boost_slider">Volumen del boost</string>
+    <string name="setting_boost_value">%1$d%%</string>
+    <string name="setting_test_alarm">Probar alarma</string>
+    <string name="setting_test_alarm_hint">Escucha cómo suena antes de conectar el cargador.</string>
+    <string name="action_test">Probar</string>
+
+    <string name="test_alarm_title">Probando alarma</string>
+    <string name="test_alarm_body">Ajusta el sonido o el boost mientras suena. Suena unos segundos y se detiene sola; también puedes detenerla aquí.</string>
+    <string name="action_stop_test">Detener</string>
+
+    <string name="not_connected_title">Ups, no estás conectado</string>
+    <string name="not_connected_body">Estás intentando monitorear la batería, pero el cargador no está conectado. Conecta tu celular al cargador y vuelve a pulsar "Iniciar monitoreo".</string>
 
     <string name="channel_monitoring">Estado de la carga</string>
     <string name="channel_monitoring_desc">Muestra el progreso mientras se monitorea la carga.</string>
@@ -31,20 +55,20 @@
     <string name="channel_alarm_desc">Suena cuando la batería termina de cargar.</string>
 
     <string name="notif_charging">Batería: %d%% · Cargando…</string>
-    <string name="notif_waiting">100%% · Alarma en %s</string>
+    <string name="notif_waiting">%1$d%% · Alarma en %2$s</string>
     <string name="notif_waiting_plug">Batería: %d%% · Esperando el cargador</string>
-    <string name="notif_complete">¡Carga completa! Desconecta el cargador.</string>
+    <string name="notif_complete">¡Nivel %1$d%% alcanzado! Desconecta el cargador.</string>
     <string name="notif_action_stop">Detener</string>
 
-    <string name="alarm_title">¡Carga completa!</string>
-    <string name="alarm_body">Tu batería lleva %1$d %2$s al 100%%. Puedes desconectar el cargador.</string>
+    <string name="alarm_title">¡Nivel alcanzado!</string>
+    <string name="alarm_body">Tu batería lleva %1$d %2$s al %3$d%%. Puedes desconectar el cargador.</string>
     <string name="minuto">minuto</string>
     <string name="minutos">minutos</string>
 
-    <string name="state_complete">Carga completa</string>
+    <string name="state_complete">Nivel alcanzado</string>
     <string name="state_complete_detail">¡Listo! Desconecta el cargador.</string>
     <string name="state_waiting">Esperando alarma</string>
-    <string name="state_waiting_detail">Alarma en %s</string>
+    <string name="state_waiting_detail">%1$d%% · Alarma en %2$s</string>
     <string name="state_charging">Cargando…</string>
     <string name="state_charging_detail">Cargando…</string>
     <string name="state_waiting_plug">Esperando el cargador</string>
@@ -52,4 +76,11 @@
     <string name="monitor_battery">Batería</string>
     <string name="monitor_status">Estado</string>
     <string name="monitor_alarm_in">Alarma en</string>
+    <string name="monitor_connect_prompt">Conecta tu celular al cargador</string>
+    <string name="monitor_connect_detail">El monitoreo comienza en cuanto detecte la carga. Si desconectas el cargador antes de tu nivel o lo detienes aquí, se cancela solo.</string>
+
+    <string name="app_github_label">Norvyz/Battery-Alarm</string>
+    <string name="app_repo_url">https://github.com/Norvyz/Battery-Alarm</string>
+    <string name="app_credits">Hecho por Norvyz</string>
+    <string name="app_credits_note">App de código abierto. Toca el logo de GitHub para ver el repositorio.</string>
 </resources>

@@ -14,7 +14,8 @@ data class MonitorState(
     val waiting: Boolean = false,
     val remainingSeconds: Int = 0,
     val alarmed: Boolean = false,
-    val delayMinutes: Int = 2
+    val delayMinutes: Int = 2,
+    val targetLevel: Int = 100
 )
 
 object Monitor {

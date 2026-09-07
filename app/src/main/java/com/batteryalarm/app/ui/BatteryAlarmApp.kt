@@ -1,5 +1,7 @@
 package com.batteryalarm.app.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +31,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -42,6 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -62,9 +67,15 @@ import com.batteryalarm.app.util.Units
 @Composable
 fun BatteryAlarmApp(
     showAlarmDialog: Boolean,
+    showTestAlarmDialog: Boolean,
+    showNotConnectedDialog: Boolean,
+    soundPickVersion: Int,
     onStartMonitoring: () -> Unit,
     onStopMonitoring: () -> Unit,
-    onPickSound: () -> Unit
+    onPickSound: () -> Unit,
+    onTestAlarm: () -> Unit,
+    onStopTestAlarm: () -> Unit,
+    onDismissNotConnected: () -> Unit
 ) {
     val state by Monitor.state.collectAsState()
     val context = LocalContext.current
@@ -90,6 +101,8 @@ fun BatteryAlarmApp(
                 IdleScreen(
                     onStartMonitoring = onStartMonitoring,
                     onPickSound = onPickSound,
+                    onTestAlarm = onTestAlarm,
+                    soundPickVersion = soundPickVersion,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -103,6 +116,14 @@ fun BatteryAlarmApp(
                     }
                 )
             }
+
+            if (showTestAlarmDialog) {
+                TestAlarmDialog(onStop = onStopTestAlarm)
+            }
+
+            if (showNotConnectedDialog) {
+                NotConnectedDialog(onDismiss = onDismissNotConnected)
+            }
         }
     }
 }
@@ -115,15 +136,29 @@ fun BatteryAlarmApp(
 private fun IdleScreen(
     onStartMonitoring: () -> Unit,
     onPickSound: () -> Unit,
+    onTestAlarm: () -> Unit,
+    soundPickVersion: Int,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val delayMinutes = Settings.delayMinutes(context)
-    val soundLabel = Sounds.label(context, Settings.sound(context))
+    var delayMinutes by rememberSaveable { mutableStateOf(Settings.delayMinutes(context)) }
+    var soundLabel by rememberSaveable(soundPickVersion) {
+        mutableStateOf(Sounds.label(context, Settings.sound(context)))
+    }
+    val repoUrl = context.getString(R.string.app_repo_url)
+    val openRepo = {
+        try {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(repoUrl)))
+        } catch (_: Exception) {
+        }
+    }
 
     var showDelayMenu by remember { mutableStateOf(false) }
     var showCustomDelayDialog by remember { mutableStateOf(false) }
     var showSoundMenu by remember { mutableStateOf(false) }
+    var autoStart by remember { mutableStateOf(Settings.autoStart(context)) }
+    var boostLevel by remember { mutableStateOf(Settings.boostLevel(context)) }
+    var targetLevel by rememberSaveable { mutableStateOf(Settings.targetLevel(context)) }
 
     Column(
         modifier = modifier
@@ -235,6 +270,7 @@ private fun IdleScreen(
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.delay_value, minutes)) },
                                 onClick = {
+                                    delayMinutes = minutes
                                     Settings.setDelayMinutes(context, minutes)
                                     showDelayMenu = false
                                 }
@@ -249,6 +285,52 @@ private fun IdleScreen(
                         )
                     }
                 }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 18.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_battery_charging),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.setting_target_title),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = stringResource(R.string.setting_target_hint),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Text(
+                        text = stringResource(R.string.setting_target_value, targetLevel),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                Slider(
+                    value = targetLevel.toFloat(),
+                    onValueChange = { new ->
+                        val level = new.toInt().coerceIn(1, 100)
+                        targetLevel = level
+                        Settings.setTargetLevel(context, level)
+                    },
+                    valueRange = 1f..100f,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 14.dp)
+                )
+                Spacer(Modifier.height(8.dp))
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
 
@@ -277,6 +359,11 @@ private fun IdleScreen(
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                            Text(
+                                text = stringResource(R.string.setting_sound_tip),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                         Text(
                             text = stringResource(R.string.setting_change),
@@ -292,6 +379,7 @@ private fun IdleScreen(
                             text = { Text(stringResource(R.string.sound_system_alarm)) },
                             onClick = {
                                 Settings.setSound(context, Settings.SOUND_SYSTEM_ALARM)
+                                soundLabel = Sounds.label(context, Settings.SOUND_SYSTEM_ALARM)
                                 showSoundMenu = false
                             }
                         )
@@ -299,6 +387,7 @@ private fun IdleScreen(
                             text = { Text(stringResource(R.string.sound_system_notification)) },
                             onClick = {
                                 Settings.setSound(context, Settings.SOUND_SYSTEM_NOTIFICATION)
+                                soundLabel = Sounds.label(context, Settings.SOUND_SYSTEM_NOTIFICATION)
                                 showSoundMenu = false
                             }
                         )
@@ -311,8 +400,194 @@ private fun IdleScreen(
                         )
                     }
                 }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            autoStart = !autoStart
+                            Settings.setAutoStart(context, autoStart)
+                        }
+                        .padding(horizontal = 18.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_bolt),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.setting_autostart_title),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = stringResource(R.string.setting_autostart_hint),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = stringResource(R.string.setting_autostart_note),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = autoStart,
+                        onCheckedChange = null
+                    )
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            val enabled = boostLevel > 0
+                            boostLevel = if (enabled) 0 else if (boostLevel == 0) 100 else boostLevel
+                            Settings.setBoostLevel(context, boostLevel)
+                        }
+                        .padding(horizontal = 18.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_sound),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.setting_boost_title),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = stringResource(R.string.setting_boost_hint),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = boostLevel > 0,
+                        onCheckedChange = null
+                    )
+                }
+
+                if (boostLevel > 0) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 18.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.setting_boost_slider),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = stringResource(R.string.setting_boost_value, boostLevel),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    Slider(
+                        value = boostLevel.toFloat(),
+                        onValueChange = { new ->
+                            val level = new.toInt().coerceIn(0, 100)
+                            boostLevel = level
+                            Settings.setBoostLevel(context, level)
+                        },
+                        valueRange = 0f..100f,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onTestAlarm() }
+                        .padding(horizontal = 18.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_bell),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.setting_test_alarm),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = stringResource(R.string.setting_test_alarm_hint),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Text(
+                        text = stringResource(R.string.action_test),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
+
+        Spacer(Modifier.height(20.dp))
+
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(50))
+                .clickable { openRepo() }
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_github),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = stringResource(R.string.app_github_label),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+
+        Text(
+            text = stringResource(R.string.app_credits_note),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        Text(
+            text = stringResource(R.string.app_credits),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
 
         Spacer(Modifier.height(24.dp))
     }
@@ -321,6 +596,7 @@ private fun IdleScreen(
         CustomDelayDialog(
             onDismiss = { showCustomDelayDialog = false },
             onConfirm = { minutes ->
+                delayMinutes = minutes
                 Settings.setDelayMinutes(context, minutes)
                 showCustomDelayDialog = false
             }
@@ -388,10 +664,44 @@ private fun MonitoringScreen(
 
         MonitorStatusHeader(state)
 
+        if (!state.charging && !state.waiting && !state.alarmed) {
+            Spacer(Modifier.height(20.dp))
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_bolt),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = stringResource(R.string.monitor_connect_prompt),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = stringResource(R.string.monitor_connect_detail),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+            }
+        }
+
         Spacer(Modifier.height(40.dp))
 
         Text(
-            text = if (state.waiting) "100%" else "${state.level}%",
+            text = if (state.waiting || state.alarmed) "${state.targetLevel}%" else "${state.level}%",
             fontSize = 72.sp,
             fontWeight = FontWeight.Bold,
             color = if (state.alarmed) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onBackground
@@ -412,6 +722,7 @@ private fun MonitoringScreen(
 
         BatteryBar(
             level = state.level,
+            target = state.targetLevel,
             charging = state.charging,
             waiting = state.waiting,
             alarmed = state.alarmed,
@@ -534,12 +845,13 @@ private fun MonitorStatusHeader(state: MonitorState) {
 @Composable
 private fun BatteryBar(
     level: Int,
+    target: Int,
     charging: Boolean,
     waiting: Boolean,
     alarmed: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val shownLevel = if (waiting || alarmed) 100 else level.coerceIn(0, 100)
+    val shownLevel = if (waiting || alarmed) target else level.coerceIn(0, 100)
     val fillColor = when {
         alarmed -> MaterialTheme.colorScheme.tertiary
         else -> MaterialTheme.colorScheme.primary
@@ -611,6 +923,7 @@ private fun statusLine(state: MonitorState): String {
         state.alarmed -> stringResource(R.string.state_complete_detail)
         state.waiting -> stringResource(
             R.string.state_waiting_detail,
+            state.targetLevel,
             Units.formatRemaining(state.remainingSeconds)
         )
         state.charging -> stringResource(R.string.state_charging_detail)
@@ -629,6 +942,7 @@ private fun AlarmDialog(
 ) {
     val context = LocalContext.current
     val delayMin = state?.delayMinutes ?: Settings.delayMinutes(context)
+    val target = state?.targetLevel ?: Settings.targetLevel(context)
     val minUnit = context.getString(if (delayMin == 1) R.string.minuto else R.string.minutos)
 
     AlertDialog(
@@ -649,7 +963,7 @@ private fun AlarmDialog(
         },
         text = {
             Text(
-                text = stringResource(R.string.alarm_body, delayMin, minUnit),
+                text = stringResource(R.string.alarm_body, delayMin, minUnit, target),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -659,6 +973,82 @@ private fun AlarmDialog(
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth()
             ) { Text(stringResource(R.string.action_stop_alarm)) }
+        }
+    )
+}
+
+// ---------------------------------------------------------------------------
+// Diálogo de probar alarma
+// ---------------------------------------------------------------------------
+
+@Composable
+private fun TestAlarmDialog(onStop: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onStop,
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_bell),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(28.dp)
+            )
+        },
+        title = {
+            Text(
+                text = stringResource(R.string.test_alarm_title),
+                textAlign = TextAlign.Center
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.test_alarm_body),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onStop,
+                modifier = Modifier.fillMaxWidth()
+            ) { Text(stringResource(R.string.action_stop_test)) }
+        }
+    )
+}
+
+// ---------------------------------------------------------------------------
+// Diálogo "no estás conectado"
+// ---------------------------------------------------------------------------
+
+@Composable
+private fun NotConnectedDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_bolt),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(28.dp)
+            )
+        },
+        title = {
+            Text(
+                text = stringResource(R.string.not_connected_title),
+                textAlign = TextAlign.Center
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.not_connected_body),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.fillMaxWidth()
+            ) { Text(stringResource(R.string.action_ok)) }
         }
     )
 }
