@@ -18,10 +18,10 @@
 
 ## Qué hace
 
-Algunos cargadores y celulares no avisan cuando la batería está llena. Esta app lo hace por ti: abres la app, pulsas **Iniciar monitoreo**, conectas el cargador y te olvidas. Cuando la batería llega al 100 %, espera el tiempo que tú elijas y suena una alarma para que desconectes el cargador.
+Algunos cargadores y celulares no avisan cuando la batería está llena. Esta app lo hace por ti: abres la app, pulsas **Iniciar monitoreo**, conectas el cargador y te olvidas. Cuando la batería llega al **nivel que tú eliges** (del 1 % al 100 %, por ejemplo 80 %), espera el tiempo que tú decidas y suena una alarma para que desconectes el cargador.
 
 ```
-Iniciar monitoreo → conectar el cargador → detectar 100% → esperar el tiempo configurado → alarma
+Iniciar monitoreo → conectar el cargador → llegar al nivel elegido (ej. 80%) → esperar el tiempo configurado → alarma
 ```
 
 ## Cómo funciona
@@ -29,9 +29,9 @@ Iniciar monitoreo → conectar el cargador → detectar 100% → esperar el tiem
 1. Abres la app y pulsas **Iniciar monitoreo**.
 2. Conectas el cargador (opcionalmente puedes activar **Iniciar al conectar el cargador** para que ese paso se haga solo).
 3. Aparece una notificación permanente con el nivel de batería y un botón **Detener**.
-4. Al llegar al **100 %**, la app espera el tiempo configurado. Por defecto son **2 minutos**, y puedes elegir 1, 5, 10, 15 o un valor personalizado (1 a 120 minutos).
+4. Al llegar al **nivel que elegiste** (eliges un porcentaje entre 1 y 100; por defecto el 100 %), la app espera el tiempo configurado. Por defecto son **2 minutos**, y puedes elegir 1, 5, 10, 15 o un valor personalizado (1 a 120 minutos).
 5. Suena la alarma con el sonido que elegiste: alarma del sistema, notificación del sistema o un archivo de audio propio. Si activas el **boost**, puedes elegir cuánto subir el volumen mientras suena.
-6. El monitoreo termina solo: al detenerlo desde la notificación o al desconectar el cargador antes del 100 %.
+6. El monitoreo termina solo: al detenerlo desde la notificación o al desconectar el cargador antes de llegar al nivel.
 
 La app no monitorea la batería de forma permanente: el servicio solo se mantiene mientras tú decides vigilar una carga.
 
@@ -47,9 +47,9 @@ Este proyecto es **código abierto**: no tienes que confiar en esta descripción
 
 <div align="center">
 
-| Preview | Notificación |
-| --- | --- |
-| <img src="https://github.com/user-attachments/assets/5e9f5cc0-87c7-41ba-a211-a740dbbeb32d" width="240" alt="Pantalla de inicio"> | <img src="https://github.com/user-attachments/assets/95b4414e-369a-4dca-8761-313ef2b73b56" width="240" alt="Notificación de monitoreo"> |
+| Inicio | Monitoreo activo | Alarma sonando |
+| --- | --- | --- |
+| <img src="Capturas/01-inicio.png" width="230" alt="Pantalla de inicio"> | <img src="Capturas/02-monitoreo.png" width="230" alt="Monitoreo activo"> | <img src="Capturas/03-alarma.png" width="230" alt="Alarma sonando"> |
 
 </div>
 
@@ -58,6 +58,20 @@ Este proyecto es **código abierto**: no tienes que confiar en esta descripción
 ## Instalar
 
 Descarga la última APK desde la pestaña [Releases](https://github.com/Norvyz/Battery-Alarm/releases).
+
+### Aviso de Google Play Protect
+
+Al instalar una APK fuera de Play Store, Google puede bloquear la instalación con un aviso de **desarrollador desconocido**. Es normal (el desarrollador no está verificado por Google) y no significa que la app sea peligrosa: es código abierto y puedes revisar todo lo que hace en este repositorio.
+
+| Aviso de bloqueo | Desbloquear instalación |
+| --- | --- |
+| <img src="Capturas/04-bloqueo-play-protect.png" width="230" alt="Aviso de bloqueo de Google Play Protect"> | <img src="Capturas/05-instalar-de-todos-modos.png" width="230" alt="Instalar de todos modos desde más detalles"> |
+
+Para instalar de todos modos:
+
+1. Toca **Mostrar más detalles**.
+2. Toca **Instalar de todos modos** (puede aparecer como "Aceptar riesgos" en algunos teléfonos).
+3. Si el teléfono vuelve a mostrarte el aviso, confirma de nuevo: la app queda instalada igual.
 
 ## Desarrollar
 
@@ -82,7 +96,8 @@ Toda la iconografía es **SVG** hecha a medida para el proyecto, sin depender de
 | `brand/AssetsGen.java` | Genera los iconos del repositorio |
 | `assets/` | Iconos y banner del repositorio (`icon-512.png`, `icon-192.png`, `social-preview.png`) |
 | `res/drawable/ic_launcher_foreground.xml` | Icono adaptativo (Android 8+) |
-| `res/drawable/logo.xml` | Emblema usado dentro de la app |
+| `res/drawable-nodpi/logo.png` | Emblema usado dentro de la app |
+| `Capturas/` | Capturas de pantalla del README |
 
 ## Agradecimientos
 
