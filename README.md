@@ -77,36 +77,6 @@ Para instalar de todos modos:
 2. Toca **Instalar de todos modos** (puede aparecer como "Aceptar riesgos" en algunos teléfonos).
 3. Si el teléfono vuelve a mostrarte el aviso, confirma de nuevo: la app queda instalada igual.
 
-## Desarrollar
-
-```bash
-./gradlew assembleDebug    # APK de depuración
-./gradlew assembleRelease  # APK release
-```
-
-La APK release queda en `app/build/outputs/apk/release/app-release.apk`.
-
-## Diseño e identidad
-
-Toda la iconografía es **SVG** hecha a medida para el proyecto, sin depender de emojis del sistema.
-
-**El logo** es una **batería con su rayo de carga y ondas de sonido a los dos lados**, todo en un solo color menta: la batería que se carga al máximo, el rayo que la carga y la alarma que avisa cuando termina.
-
-| Archivo | Descripción |
-| --- | --- |
-| `brand/logo.svg` | Logo principal (fondo + símbolo), para README y web |
-| `brand/icon-foreground.svg` | Símbolo con fondo transparente (foreground del icono adaptativo) |
-| `brand/IconRenderer.java` | Genera los mipmaps PNG heredados a partir de la misma geometría |
-| `brand/AssetsGen.java` | Genera los iconos del repositorio |
-| `assets/` | Iconos y banner del repositorio (`icon-512.png`, `icon-192.png`, `social-preview.png`) |
-| `res/drawable/ic_launcher_foreground.xml` | Icono adaptativo (Android 8+) |
-| `res/drawable-nodpi/logo.png` | Emblema usado dentro de la app |
-| `Capturas/` | Capturas de pantalla del README |
-
-## Agradecimientos
-
-Hecho con <3 para **Norvyz**.
-
 ## Licencia
 
 [MIT](LICENSE) © Battery Alarm contributors
