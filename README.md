@@ -74,13 +74,15 @@ Al instalar una APK fuera de Play Store, Google puede bloquear la instalación c
 | --- | --- |
 | <img src="Capturas/07-bloqueo-play-protect.png" width="230" alt="Aviso de bloqueo de Google Play Protect"> | <img src="Capturas/08-instalar-de-todos-modos.png" width="230" alt="Instalar de todos modos desde más detalles"> |
 
+</div>
+
 Para instalar de todos modos:
 
 1. Toca **Mostrar más detalles**.
 2. Toca **Instalar de todos modos** (puede aparecer como "Aceptar riesgos" en algunos teléfonos).
 3. Si el teléfono vuelve a mostrarte el aviso, confirma de nuevo: la app queda instalada igual.
 
-</div>
+
 
 ## Licencia
 
