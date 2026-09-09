@@ -59,12 +59,13 @@ Este proyecto es **código abierto**: no tienes que confiar en esta descripción
 
 <br/>
 
-<div align="center">
 
 ## Instalar
 
 Descarga la última APK desde la pestaña [Releases](https://github.com/Norvyz/Battery-Alarm/releases).
 
+<div align="center">
+  
 ### Aviso de Google Play Protect
 
 Al instalar una APK fuera de Play Store, Google puede bloquear la instalación con un aviso de **desarrollador desconocido**. Es normal (el desarrollador no está verificado por Google) y no significa que la app sea peligrosa: es código abierto y puedes revisar todo lo que hace en este repositorio.
