@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/icon-192.png" width="112" height="112" alt="Logo de Battery Alarm">
+<img src="brand/logo.svg" width="112" height="112" alt="Logo de Battery Alarm">
 
 # Battery Alarm
 
@@ -43,37 +43,33 @@ Nada. No pide cuentas, no usa Internet y no envía ningún dato a ningún servid
 
 Este proyecto es **código abierto**: no tienes que confiar en esta descripción. Puedes revisar el código en este repositorio y, si no sabes leer código, puedes descargar el contenido, pedirle a una IA que analice qué hace la app y compararlo con lo que ves en pantalla. Todo lo que hace está en este repositorio.
 
----
-
 ## Capturas
 
 <div align="center">
 
-| Inicio | Monitoreo activo | Alarma sonando |
+| Inicio | Monitoreo activo | Análisis de la carga |
 | --- | --- | --- |
-| <img src="Capturas/01-inicio.png" width="230" alt="Pantalla de inicio"> | <img src="Capturas/02-monitoreo.png" width="230" alt="Monitoreo activo"> | <img src="Capturas/03-alarma.png" width="230" alt="Alarma sonando"> |
+| <img src="Capturas/01-inicio.png" width="230" alt="Pantalla de inicio"> | <img src="Capturas/02-monitoreo.png" width="230" alt="Monitoreo activo"> | <img src="Capturas/04-Analisis.png" width="230" alt="Análisis de la carga (voltaje, corriente, potencia, temperatura y tiempo estimado)"> |
+
+| Alarma sonando | Inicio (tema claro) | Monitoreo (tema claro) |
+| --- | --- | --- |
+| <img src="Capturas/03-alarma.png" width="230" alt="Alarma sonando"> | <img src="Capturas/05-Inicio Blanco.png" width="230" alt="Pantalla de inicio en tema claro"> | <img src="Capturas/06-Monitoreo Blanco.png" width="230" alt="Monitoreo activo en tema claro"> |
 
 </div>
 
 <br/>
 
----
-
 ## Instalar
 
 Descarga la última APK desde la pestaña [Releases](https://github.com/Norvyz/Battery-Alarm/releases).
 
----
-
-<div align="center">
 ### Aviso de Google Play Protect
 
 Al instalar una APK fuera de Play Store, Google puede bloquear la instalación con un aviso de **desarrollador desconocido**. Es normal (el desarrollador no está verificado por Google) y no significa que la app sea peligrosa: es código abierto y puedes revisar todo lo que hace en este repositorio.
 
-
 | Aviso de bloqueo | Desbloquear instalación |
 | --- | --- |
-| <img src="Capturas/05-instalar-de-todos-modos.png" width="230" alt="Instalar de todos modos desde más detalles"> | <img src="Capturas/04-bloqueo-play-protect.png" width="230" alt="Aviso de bloqueo de Google Play Protect"> |
+| <img src="Capturas/07-bloqueo-play-protect.png" width="230" alt="Aviso de bloqueo de Google Play Protect"> | <img src="Capturas/08-instalar-de-todos-modos.png" width="230" alt="Instalar de todos modos desde más detalles"> |
 
 Para instalar de todos modos:
 
@@ -81,9 +77,35 @@ Para instalar de todos modos:
 2. Toca **Instalar de todos modos** (puede aparecer como "Aceptar riesgos" en algunos teléfonos).
 3. Si el teléfono vuelve a mostrarte el aviso, confirma de nuevo: la app queda instalada igual.
 
-</div>
+## Desarrollar
 
----
+```bash
+./gradlew assembleDebug    # APK de depuración
+./gradlew assembleRelease  # APK release
+```
+
+La APK release queda en `app/build/outputs/apk/release/app-release.apk`.
+
+## Diseño e identidad
+
+Toda la iconografía es **SVG** hecha a medida para el proyecto, sin depender de emojis del sistema.
+
+**El logo** es una **batería con su rayo de carga y ondas de sonido a los dos lados**, todo en un solo color menta: la batería que se carga al máximo, el rayo que la carga y la alarma que avisa cuando termina.
+
+| Archivo | Descripción |
+| --- | --- |
+| `brand/logo.svg` | Logo principal (fondo + símbolo), para README y web |
+| `brand/icon-foreground.svg` | Símbolo con fondo transparente (foreground del icono adaptativo) |
+| `brand/IconRenderer.java` | Genera los mipmaps PNG heredados a partir de la misma geometría |
+| `brand/AssetsGen.java` | Genera los iconos del repositorio |
+| `assets/` | Iconos y banner del repositorio (`icon-512.png`, `icon-192.png`, `social-preview.png`) |
+| `res/drawable/ic_launcher_foreground.xml` | Icono adaptativo (Android 8+) |
+| `res/drawable-nodpi/logo.png` | Emblema usado dentro de la app |
+| `Capturas/` | Capturas de pantalla del README |
+
+## Agradecimientos
+
+Hecho con <3 para **Norvyz**.
 
 ## Licencia
 

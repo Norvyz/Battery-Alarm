@@ -20,9 +20,30 @@ object Settings {
     private const val KEY_AUTO_START = "auto_start_on_connect"
     private const val KEY_BOOST_LEVEL = "alarm_boost_level"
     private const val KEY_TARGET_LEVEL = "alarm_target_level"
+    private const val KEY_THEME = "app_theme"
 
     const val SOUND_SYSTEM_ALARM = "system_alarm"
     const val SOUND_SYSTEM_NOTIFICATION = "system_notification"
+
+    const val THEME_SYSTEM = "system"
+    const val THEME_LIGHT = "light"
+    const val THEME_DARK = "dark"
+
+    /** Modo de tema elegido por el usuario: "system", "light" o "dark". */
+    fun themeMode(context: Context): String {
+        return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(KEY_THEME, THEME_SYSTEM) ?: THEME_SYSTEM
+    }
+
+    fun setThemeMode(context: Context, mode: String) {
+        val safe = when (mode) {
+            THEME_LIGHT -> THEME_LIGHT
+            THEME_DARK -> THEME_DARK
+            else -> THEME_SYSTEM
+        }
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .edit().putString(KEY_THEME, safe).apply()
+    }
 
     fun delayMinutes(context: Context): Int {
         val p = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

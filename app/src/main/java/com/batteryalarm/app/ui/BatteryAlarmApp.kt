@@ -2,9 +2,12 @@ package com.batteryalarm.app.ui
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -75,7 +79,9 @@ fun BatteryAlarmApp(
     onPickSound: () -> Unit,
     onTestAlarm: () -> Unit,
     onStopTestAlarm: () -> Unit,
-    onDismissNotConnected: () -> Unit
+    onDismissNotConnected: () -> Unit,
+    onThemeChanged: () -> Unit,
+    onOpenBatterySettings: () -> Unit
 ) {
     val state by Monitor.state.collectAsState()
     val context = LocalContext.current
@@ -103,6 +109,8 @@ fun BatteryAlarmApp(
                     onPickSound = onPickSound,
                     onTestAlarm = onTestAlarm,
                     soundPickVersion = soundPickVersion,
+                    onThemeChanged = onThemeChanged,
+                    onOpenBatterySettings = onOpenBatterySettings,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -138,6 +146,8 @@ private fun IdleScreen(
     onPickSound: () -> Unit,
     onTestAlarm: () -> Unit,
     soundPickVersion: Int,
+    onThemeChanged: () -> Unit,
+    onOpenBatterySettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -159,6 +169,21 @@ private fun IdleScreen(
     var autoStart by remember { mutableStateOf(Settings.autoStart(context)) }
     var boostLevel by remember { mutableStateOf(Settings.boostLevel(context)) }
     var targetLevel by rememberSaveable { mutableStateOf(Settings.targetLevel(context)) }
+    var themeMode by rememberSaveable { mutableStateOf(Settings.themeMode(context)) }
+    var showThemeMenu by remember { mutableStateOf(false) }
+
+    val selectTheme: (String) -> Unit = { mode ->
+        themeMode = mode
+        showThemeMenu = false
+        Settings.setThemeMode(context, mode)
+        onThemeChanged()
+    }
+
+    val themeLabel: String = when (themeMode) {
+        Settings.THEME_DARK -> stringResource(R.string.theme_dark)
+        Settings.THEME_LIGHT -> stringResource(R.string.theme_light)
+        else -> stringResource(R.string.theme_system)
+    }
 
     Column(
         modifier = modifier
@@ -444,6 +469,91 @@ private fun IdleScreen(
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
 
+                Box {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showThemeMenu = true }
+                            .padding(horizontal = 18.dp, vertical = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ThemeIcon(
+                            mode = themeMode,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(Modifier.width(16.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(R.string.setting_theme_title),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = stringResource(R.string.setting_theme_hint),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Text(
+                            text = themeLabel,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showThemeMenu,
+                        onDismissRequest = { showThemeMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.theme_system)) },
+                            onClick = { selectTheme(Settings.THEME_SYSTEM) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.theme_light)) },
+                            onClick = { selectTheme(Settings.THEME_LIGHT) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.theme_dark)) },
+                            onClick = { selectTheme(Settings.THEME_DARK) }
+                        )
+                    }
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onOpenBatterySettings() }
+                        .padding(horizontal = 18.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_battery_charging),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.setting_background_title),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = stringResource(R.string.setting_background_note),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Text(
+                        text = stringResource(R.string.setting_background_open),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -601,6 +711,128 @@ private fun IdleScreen(
                 showCustomDelayDialog = false
             }
         )
+    }
+}
+
+/**
+ * Ícono de tema que anima la transición claro/oscuro (gira suavemente y cambia
+ * entre sol y luna según el modo activo).
+ */
+@Composable
+private fun ThemeIcon(mode: String, modifier: Modifier = Modifier) {
+    val isDarkNow = mode == Settings.THEME_DARK ||
+        (mode == Settings.THEME_SYSTEM && isSystemInDarkTheme())
+    val rotation by animateFloatAsState(
+        targetValue = if (isDarkNow) 360f else 0f,
+        animationSpec = tween(durationMillis = 600),
+        label = "themeIcon"
+    )
+    val icon = if (isDarkNow) R.drawable.ic_moon else R.drawable.ic_sun
+    Icon(
+        painter = painterResource(icon),
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.primary,
+        modifier = modifier.rotate(rotation)
+    )
+}
+
+/**
+ * Tarjeta con la información y el análisis de la carga: duración, conexión,
+ * voltaje, corriente, potencia estimada, temperatura y tiempo restante.
+ * Cuando un dato no está disponible se muestra "No disponible" (nunca se
+ * inventan valores).
+ */
+@Composable
+private fun ChargeDetailsCard(state: MonitorState) {
+    val context = LocalContext.current
+    val resources = context.resources
+    val r = state.reading
+    val unavail = context.getString(R.string.charge_unavailable)
+
+    val etaText = when {
+        !state.charging -> unavail
+        r.estimateMinutes == null -> context.getString(R.string.charge_calculating)
+        r.estimateMinutes < 60 ->
+            context.getString(R.string.charge_min, r.estimateMinutes)
+        else ->
+            context.getString(
+                R.string.charge_hour_min,
+                r.estimateMinutes / 60,
+                r.estimateMinutes % 60
+            )
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 1.dp
+    ) {
+        Column(Modifier.padding(18.dp)) {
+            Text(
+                text = stringResource(R.string.monitor_details_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(12.dp))
+            StatusRow(
+                label = stringResource(R.string.monitor_duration),
+                value = Units.formatDuration(state.elapsedSeconds)
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
+            StatusRow(
+                label = stringResource(R.string.monitor_plugged),
+                value = r.plugLabel(resources) ?: unavail
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
+            StatusRow(
+                label = stringResource(R.string.monitor_voltage),
+                value = r.voltageText()?.let { context.getString(R.string.charge_voltage_v, it) }
+                    ?: unavail
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
+            StatusRow(
+                label = stringResource(R.string.monitor_current),
+                value = r.currentText()?.let { context.getString(R.string.charge_current_a, it) }
+                    ?: unavail
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
+            StatusRow(
+                label = stringResource(R.string.monitor_power),
+                value = r.powerText()?.let { context.getString(R.string.charge_power_w, it) }
+                    ?: unavail
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
+            StatusRow(
+                label = stringResource(R.string.monitor_temp),
+                value = r.tempText()?.let { context.getString(R.string.charge_temp_c, it) }
+                    ?: unavail
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
+            StatusRow(
+                label = stringResource(R.string.monitor_eta),
+                value = etaText
+            )
+        }
     }
 }
 
@@ -762,6 +994,10 @@ private fun MonitoringScreen(
                 }
             }
         }
+
+        Spacer(Modifier.height(28.dp))
+
+        ChargeDetailsCard(state)
 
         Spacer(Modifier.height(28.dp))
 

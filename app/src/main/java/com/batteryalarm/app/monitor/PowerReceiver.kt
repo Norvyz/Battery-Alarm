@@ -3,7 +3,6 @@ package com.batteryalarm.app.monitor
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.batteryalarm.app.data.Settings
 
 /**
@@ -20,20 +19,15 @@ class PowerReceiver : BroadcastReceiver() {
         when (intent?.action) {
             Intent.ACTION_POWER_CONNECTED -> {
                 if (Settings.autoStart(ctx)) {
-                    try {
-                        MonitoringService.start(ctx)
-                    } catch (t: Throwable) {
-                        Log.w(TAG, "No se pudo iniciar el monitoreo automático: $t")
-                    }
+                    // En Android 12+ el arranque en segundo plano puede estar
+                    // bloqueado; si ocurre, se avisa al usuario con una
+                    // notificación que permite iniciar el monitoreo con un toque.
+                    MonitoringService.startFromBackground(ctx)
                 }
             }
             Intent.ACTION_POWER_DISCONNECTED -> {
                 MonitoringService.stop(ctx)
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "BatteryAlarm"
     }
 }

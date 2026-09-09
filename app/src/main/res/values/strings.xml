@@ -33,7 +33,49 @@
 
     <string name="setting_autostart_title">Iniciar al conectar el cargador</string>
     <string name="setting_autostart_hint">Al conectar el cargador el monitoreo se inicia solo.</string>
-    <string name="setting_autostart_note">En algunos celulares, abre la app una vez antes de conectar el cargador.</string>
+    <string name="setting_autostart_note">Con la app abierta o en segundo plano, conectar el cargador inicia el monitoreo solo. En Android 12+ es recomendable desactivar la optimización de batería (ver "Iniciar en segundo plano").</string>
+
+    <string name="setting_theme_title">Tema</string>
+    <string name="setting_theme_hint">Estilo de la interfaz</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+
+    <string name="setting_background_title">Iniciar en segundo plano</string>
+    <string name="setting_background_hint">Permite que el monitoreo empiece solo al conectar el cargador, incluso con la app cerrada.</string>
+    <string name="setting_background_open">Ajustes de batería</string>
+    <string name="setting_background_done">Permitido</string>
+    <string name="setting_background_note">En algunos celulares hay que desactivar la optimización de batería para que el aviso llegue a tiempo.</string>
+
+    <string name="autostart_notice_title">Cargador conectado</string>
+    <string name="autostart_notice_body">Pulsa para iniciar el monitoreo de la carga.</string>
+    <string name="autostart_notice_action">Iniciar monitoreo</string>
+
+    <string name="monitor_plugged">Conexión</string>
+    <string name="monitor_voltage">Voltaje</string>
+    <string name="monitor_current">Corriente</string>
+    <string name="monitor_power">Potencia estimada</string>
+    <string name="monitor_temp">Temperatura</string>
+    <string name="monitor_eta">Hasta el 100%%</string>
+    <string name="monitor_duration">Tiempo cargando</string>
+    <string name="monitor_details_title">Detalles de la carga</string>
+
+    <string name="charge_unavailable">No disponible</string>
+    <string name="charge_calculating">Calculando…</string>
+    <string name="charge_eta_label">≈ %1$s para 100%%</string>
+    <string name="charge_min">%1$d min</string>
+    <string name="charge_hour_min">%1$dh %2$d min</string>
+    <string name="charge_eta_at">Llegará aproximadamente a las %1$s</string>
+    <string name="charge_voltage_v">%1$s V</string>
+    <string name="charge_current_a">%1$s A</string>
+    <string name="charge_power_w">≈ %1$s W</string>
+    <string name="charge_temp_c">%1$s °C</string>
+    <string name="charge_power_na">Potencia: No disponible</string>
+    <string name="charge_plug_ac">Enchufe</string>
+    <string name="charge_plug_usb">USB</string>
+    <string name="charge_plug_wireless">Inalámbrica</string>
+    <string name="charge_plug_dock">Base</string>
+
     <string name="setting_boost_title">Boost de volumen</string>
     <string name="setting_boost_hint">Sube el volumen mientras suena la alarma.</string>
     <string name="setting_boost_slider">Volumen del boost</string>
@@ -53,6 +95,8 @@
     <string name="channel_monitoring_desc">Muestra el progreso mientras se monitorea la carga.</string>
     <string name="channel_alarm">Alarma de carga completa</string>
     <string name="channel_alarm_desc">Suena cuando la batería termina de cargar.</string>
+    <string name="channel_autostart">Avisos importantes</string>
+    <string name="channel_autostart_desc">Avisos del monitoreo automático al conectar el cargador.</string>
 
     <string name="notif_charging">Batería: %d%% · Cargando…</string>
     <string name="notif_waiting">%1$d%% · Alarma en %2$s</string>

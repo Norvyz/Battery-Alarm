@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Rayo de marca (misma silueta que la notificación), en verde menta
+         sobre el fondo verde oscuro de la pantalla de carga. -->
+    <group
+        android:name="bolt"
+        android:pivotX="12"
+        android:pivotY="12">
+        <path
+            android:pathData="M 12.2,4 L 8.5,11 H 10.9 L 9.5,16 L 15,8 H 12.4 Z"
+            android:fillColor="#B2FBD7" />
+    </group>
+</vector>

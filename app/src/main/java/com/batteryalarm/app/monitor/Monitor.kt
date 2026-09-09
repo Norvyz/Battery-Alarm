@@ -1,5 +1,6 @@
 package com.batteryalarm.app.monitor
 
+import com.batteryalarm.app.data.ChargeReading
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -15,7 +16,9 @@ data class MonitorState(
     val remainingSeconds: Int = 0,
     val alarmed: Boolean = false,
     val delayMinutes: Int = 2,
-    val targetLevel: Int = 100
+    val targetLevel: Int = 100,
+    val elapsedSeconds: Long = 0,
+    val reading: ChargeReading = ChargeReading()
 )
 
 object Monitor {

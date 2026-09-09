@@ -5,10 +5,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.PowerManager
+import android.provider.Settings as AndroidSettings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.mutableStateOf
 import com.batteryalarm.app.data.Settings
 import com.batteryalarm.app.monitor.AlarmPlayer
@@ -24,6 +28,7 @@ class MainActivity : ComponentActivity() {
     private val testingAlarm = mutableStateOf(false)
     private val notConnected = mutableStateOf(false)
     private val soundPickVersion = mutableStateOf(0)
+    private val themeMode = mutableStateOf(Settings.THEME_SYSTEM)
     private val testHandler = Handler(Looper.getMainLooper())
 
     private val notificationPermission =
@@ -52,11 +57,19 @@ class MainActivity : ComponentActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        themeMode.value = Settings.themeMode(this)
         alarmPending.value = intent?.getBooleanExtra(ALARM_EXTRA, false) == true
         setContent {
-            BatteryAlarmTheme {
+            BatteryAlarmTheme(
+                darkTheme = when (themeMode.value) {
+                    Settings.THEME_DARK -> true
+                    Settings.THEME_LIGHT -> false
+                    else -> isSystemInDarkTheme()
+                }
+            ) {
                 BatteryAlarmApp(
                     showAlarmDialog = alarmPending.value,
                     showTestAlarmDialog = testingAlarm.value,
@@ -67,7 +80,9 @@ class MainActivity : ComponentActivity() {
                     onPickSound = { launchAudioPicker() },
                     onTestAlarm = { startTestAlarm() },
                     onStopTestAlarm = { stopTestAlarm() },
-                    onDismissNotConnected = { notConnected.value = false }
+                    onDismissNotConnected = { notConnected.value = false },
+                    onThemeChanged = { themeMode.value = Settings.themeMode(this) },
+                    onOpenBatterySettings = { openBatterySettings() }
                 )
             }
         }
@@ -96,6 +111,28 @@ class MainActivity : ComponentActivity() {
 
     private fun launchAudioPicker() {
         pickSoundLauncher.launch(arrayOf("audio/*"))
+    }
+
+    /**
+     * Abre la pantalla para desactivar la optimización de batería de la app.
+     * Es lo que permite (en Android 12+ y en muchos celulares) que el monitoreo
+     * automático arranque en segundo plano, con la app cerrada.
+     */
+    private fun openBatterySettings() {
+        try {
+            val pm = getSystemService(PowerManager::class.java)
+            val intent = if (pm?.isIgnoringBatteryOptimizations(packageName) == false) {
+                AndroidSettings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS.let { action ->
+                    Intent(action, Uri.parse("package:$packageName"))
+                }
+            } else {
+                Intent(AndroidSettings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+            }
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        } catch (_: Exception) {
+            // El celular no ofrece esta opción; se ignora silenciosamente.
+        }
     }
 
     /** Reproduce la alarma unos segundos para escucharla antes de conectar el cargador. */

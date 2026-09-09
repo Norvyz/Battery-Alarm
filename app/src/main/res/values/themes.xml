@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.BatteryAlarm" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Pantalla de carga: fondo de marca + rayo animado, antes de la interfaz.
+         En Android 12+ usa el splash del sistema; en versiones antiguas el
+         mismo estilo lo replica la librería core-splashscreen. -->
+    <style name="Theme.BatteryAlarm.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/launcher_bg</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon_animated</item>
+        <item name="windowSplashScreenAnimationDuration">350</item>
+        <item name="postSplashScreenTheme">@style/Theme.BatteryAlarm</item>
+    </style>
 </resources>
