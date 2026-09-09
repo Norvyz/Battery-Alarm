@@ -59,6 +59,8 @@ Este proyecto es **código abierto**: no tienes que confiar en esta descripción
 
 <br/>
 
+<div align="center">
+
 ## Instalar
 
 Descarga la última APK desde la pestaña [Releases](https://github.com/Norvyz/Battery-Alarm/releases).
@@ -76,6 +78,8 @@ Para instalar de todos modos:
 1. Toca **Mostrar más detalles**.
 2. Toca **Instalar de todos modos** (puede aparecer como "Aceptar riesgos" en algunos teléfonos).
 3. Si el teléfono vuelve a mostrarte el aviso, confirma de nuevo: la app queda instalada igual.
+
+</div>
 
 ## Licencia
 
